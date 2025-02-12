@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 import './App.css'
+import Mapa from './Mapa';
 
 function App() {
  
   const [pantalla, setPantalla] = useState(<div>
+  
 
     <div>
     <h3>Digite su usuario</h3>
@@ -62,7 +63,7 @@ function App() {
 
   
   function registrar( ){
-
+  
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -90,6 +91,7 @@ function App() {
   return (
     <>
       {pantalla}
+      
     </>
   )
 }
