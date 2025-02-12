@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import Mapa from './Mapa'
+import reactLogo from './assets/react.svg'
+import viteLogo from '/vite.svg'
+import './App.css'
 
 function App() {
-
+ 
   const [pantalla, setPantalla] = useState(<div>
 
     <div>
@@ -90,7 +92,6 @@ function App() {
       {pantalla}
     </>
   )
-
 }
 
 export default App
