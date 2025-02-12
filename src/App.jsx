@@ -87,17 +87,7 @@ function App() {
 
   return (
     <>
-      <div>
-      <h1 > LandBnb </h1>
-      <div>
-        <div>
-        </div>
-        <div>
-        </div>  
-      </div>
-
-
-      </div>
+      {pantalla}
 
     </>
   )
