@@ -40,7 +40,7 @@ function App() {
       body: raw,
       redirect: "follow"
     };
-    fetch("http://127.0.0.1:8085/usuario/login", requestOptions)
+    fetch("http://18.208.152.26:8085/usuario/login", requestOptions)
       .then((response) => response.json())
       .then((result) => {
         if(result.id){
@@ -76,7 +76,7 @@ function App() {
       redirect: "follow"
     };
 
-    fetch("http://127.0.0.1:8085/usuario", requestOptions)
+    fetch("http://18.208.152.26:8085/usuario", requestOptions)
       .then((response) => response.text())
       .then((result) => alert("usuario registrado"))
        .catch((error) => console.error(error));
@@ -88,7 +88,6 @@ function App() {
   return (
     <>
       {pantalla}
-
     </>
   )
 
