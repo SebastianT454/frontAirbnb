@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import './App.css'
 import Mapa from './Mapa';
+import * as functionsUsuario from './dbcalls/FunctionsUsuario';
 
 function App() {
  
@@ -25,26 +26,12 @@ function App() {
   
   </div>
   )
-
-  const myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
   var idusuario = null
 
   function logear( ){
     var nombre =  document.getElementById('nombre').value;
     var passord =  document.getElementById('nombre').value;
-    const raw = JSON.stringify({
-      "nombre": nombre,
-      "pass": passord
-    });
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow"
-    };
-    fetch("http://18.208.152.26:8085/usuario/login", requestOptions)
-      .then((response) => response.json())
+    functionsUsuario.logear(nombre, passord)
       .then((result) => {
         if(result.id){
           setPantalla(Mapa())
@@ -60,29 +47,12 @@ function App() {
     
   }
 
-
-  
   function registrar( ){
   
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const raw = JSON.stringify({
-      "nombre": document.getElementById('nombre').value,
-      "pass": document.getElementById('nombre').value
-    });
-
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow"
-    };
-
-    fetch("http://18.208.152.26:8085/usuario", requestOptions)
-      .then((response) => response.text())
-      .then((result) => alert("usuario registrado"))
-       .catch((error) => console.error(error));
+    var nombre = document.getElementById('nombre').value;
+    var passord = document.getElementById('nombre').value;
+    functionsUsuario.registrar(nombre, passord)
+    .catch((error) => console.error(error));
     document.getElementById('mensajeregistro').textContent=""
   }
 
