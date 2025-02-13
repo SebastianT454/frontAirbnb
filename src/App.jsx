@@ -6,35 +6,33 @@ import * as functionsUsuario from './dbcalls/FunctionsUsuario';
 
 function App() {
  
-  const [pantalla, setPantalla] = useState(<div>
-  
+  const [pantalla, setPantalla] = useState(    
+  <div id="formulario-login">
+    <div id="seccion-usuario">
+      <h3 id="titulo-usuario">Digite su usuario</h3>
+      <input type="text" id="input-usuario" name="nombre" />
+    </div>
 
-    <div>
-    <h3>Digite su usuario</h3>
-    <label htmlFor="nombre"></label>
-    <input type="text" id="nombre" name="nombre"  />
+    <div id="seccion-contrasena">
+      <h3 id="titulo-contrasena">Digite su contraseña</h3>
+      <input type="password" id="input-contrasena" name="contrasena" />
     </div>
-  
-    <div>
-    <h3>Digite su contraseña</h3>
-    <label htmlFor="nombre"></label>
-    <input type="text" id="nombre" name="nombre" />
-    </div>
-    <h1 id="mensajeregistro" ></h1>
-    <button onClick={logear}>Ingresar</button>
-    <button onClick={registrar}>Registrar</button>
-  
+
+    <button id="boton-ingresar" onClick={logear}>Ingresar</button>
+    <button id="boton-registrar" onClick={registrar}>Registrar</button>
+
+    <h1 id="mensajeregistro"></h1>
   </div>
   )
   var idusuario = null
 
   function logear( ){
-    var nombre =  document.getElementById('nombre').value;
-    var passord =  document.getElementById('nombre').value;
+    var nombre =  document.getElementById('input-usuario').value;
+    var passord =  document.getElementById('input-contrasena').value;
     functionsUsuario.logear(nombre, passord)
       .then((result) => {
         if(result.id){
-          setPantalla(Mapa())
+          setPantalla(<Mapa />)
           idusuario = result.id
           console.log(idusuario)
         }else{
@@ -49,13 +47,12 @@ function App() {
 
   function registrar( ){
   
-    var nombre = document.getElementById('nombre').value;
-    var passord = document.getElementById('nombre').value;
+    var nombre = document.getElementById('input-usuario').value;
+    var passord = document.getElementById('input-contrasena').value;
     functionsUsuario.registrar(nombre, passord)
     .catch((error) => console.error(error));
     document.getElementById('mensajeregistro').textContent=""
   }
-
 
 
   return (
