@@ -1,66 +1,92 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
+import { getAll } from './dbcalls/FunctionsCity';
+import { byCity as getNeighborhoodsByCity } from './dbcalls/FunctionsNeighborhood';
 
 const Mapa = () => {
-  const mapRef = useRef(null); // Referencia al mapa
+  const [map, setMap] = useState(null);
+  const [cities, setCities] = useState([]);
+  const [neighborhoods, setNeighborhoods] = useState([]);
+  const [selectedCityId, setSelectedCityId] = useState(null);
 
   useEffect(() => {
-    if (!mapRef.current) {
-      mapRef.current = L.map('map-container').setView([40.7128, -74.006], 12); // NYC
+    // Inicializar el mapa
+    const mapInstance = L.map('map-container').setView([4.570868, -74.297333], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(mapInstance);
+    setMap(mapInstance);
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(mapRef.current);
+    // Obtener la lista de ciudades y establecerlas en el estado
+    const fetchCities = async () => {
+      const cityData = await getAll();
+      setCities(cityData);
+    };
 
-      // Agregar un marcador inicial
-      const marker = L.marker([40.7128, -74.006]).addTo(mapRef.current);
-      marker.bindPopup('Ubicación inicial').openPopup();
-
-      // Función para cambiar la vista del usuario
-      const cambiarVista = (lat, lng) => {
-        mapRef.current.setView([lat, lng], 12);
-      };
-
-      // Simulación de cambio de vista después de 5 segundos
-      setTimeout(() => {
-        cambiarVista(37.7749, -122.4194); // San Francisco
-      }, 5000);
-    }
+    fetchCities();
 
     return () => {
-      if (mapRef.current) {
-        mapRef.current.remove();
-        mapRef.current = null;
-      }
+      mapInstance.remove();
     };
   }, []);
+
+  const handleCityChange = async (event) => {
+    const cityId = parseInt(event.target.value);
+    if (isNaN(cityId)) {
+      // Si no se selecciona una ciudad válida, limpiar los barrios y restablecer la selección
+      setSelectedCityId(null);
+      setNeighborhoods([]);
+      return;
+    }
+
+    setSelectedCityId(cityId);
+
+    // Obtener los barrios de la ciudad seleccionada
+    const neighborhoodsData = await getNeighborhoodsByCity(cityId);
+    setNeighborhoods(neighborhoodsData);
+
+    // Opcional: Centrar el mapa en la ciudad seleccionada
+    const selectedCity = cities.find(city => city.id === cityId);
+    if (selectedCity && map) {
+      const [lng, lat] = JSON.parse(selectedCity.coords);
+      map.setView([lat, lng], 12);
+    }
+  };
+
+  const handleNeighborhoodChange = (event) => {
+    const neighborhoodId = parseInt(event.target.value);
+    const selectedNeighborhood = neighborhoods.find(neighborhood => neighborhood.id === neighborhoodId);
+
+    if (selectedNeighborhood && map) {
+      const [lng, lat] = JSON.parse(selectedNeighborhood.coords);
+      map.setView([lat, lng], 14); // Ajusta el zoom según sea necesario
+    }
+  };
 
   return (
     <>
       <div>
-        <header>
-          <nav id="navbar">
-            <div id="logo">Hogar temporal</div>
-            <div id="filters">
-              <select id="search-city">
-                <option value="">Seleccione una ciudad...</option>
-                <option value="medellin">Medellín</option>
-                <option value="bogota">Bogotá</option>
-                <option value="cali">Cali</option>
-                <option value="cartagena">Cartagena</option>
-                <option value="barranquilla">Barranquilla</option>
-              </select>
+      <header>
+        <nav id="navbar">
+          <div id="logo">Hogar temporal</div>
+          <div id="filters">
+            <select id="search-city" onChange={handleCityChange}>
+              <option value="">Seleccione una ciudad...</option>
+              {cities.map(city => (
+                <option key={city.id} value={city.id}>{city.name}</option>
+              ))}
+            </select>
 
-              <select id="property-type">
-                <option value="">Tipo de Propiedad</option>
-                <option value="apartment">Apartamento</option>
-                <option value="house">Casa</option>
-                <option value="cabin">Cabaña</option>
-              </select>
-            </div>
-          </nav>
-        </header>
+            <select id="neighborhoods" onChange={handleNeighborhoodChange} disabled={!selectedCityId}>
+              <option value="">Seleccione un barrio...</option>
+              {neighborhoods.map(neighborhood => (
+                <option key={neighborhood.id} value={neighborhood.id}>{neighborhood.name}</option>
+              ))}
+            </select>
+          </div>
+        </nav>
+      </header>
 
         <div id="main-container">
           <section id="property-list">

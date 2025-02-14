@@ -8,7 +8,6 @@ export const city = {
 */
 
 
-
 export async function getAll(){
     const myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
