@@ -137,12 +137,6 @@
   padding: 1rem;
 }
 
-/* Título de la propiedad */
-.property-title {
-  font-size: 1.2rem;
-  margin: 0 0 0.5rem;
-}
-
 /* Dirección de la propiedad */
 .property-address {
   font-size: 1rem;
