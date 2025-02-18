@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reserva - Airbnb Clone</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    /* Estilos básicos */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      background: #f8f8f8;
+      color: #333;
+    }
+    .reservation-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .property-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .property-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .property-price {
+      color: #ff385c;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    form {
+      margin-top: 2rem;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn {
+      padding: 0.75rem 2rem;
+      background: #ff385c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .btn:hover {
+      background: #e03350;
+    }
+    #rating input {
+      margin-right: 10px;
+    }
+    #rating label {
+      margin-right: 20px;
+      font-size: 1.1rem;
+    }
+    .total {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-top: 1.5rem;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<body>
+  <div class="reservation-container">
+    <div class="property-header">
+      <div class="property-title">Reserva</div>
+      <div class="property-price">$120/noche</div>
+    </div>
+    <form id="reservation-form">
+      <div class="form-group">
+        <label for="city">Escoja la ciudad de la casa</label>
+        <select id="city" name="city" required>
+          <option value="1">Medellin</option>
+          <option value="2">Cali</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="neighborhood">Escoja el barrio de la casa</label>
+        <select id="neighborhood" name="neighborhood" required>
+          <option value="1">Laureles</option>
+          <option value="2">Poblado</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="house-price">Precio de la casa</label>
+        <input type="text" id="house-price" name="house-price" placeholder="Ingresa el precio de la casa en COP sin comas" required>
+      </div>
+      <div class="form-group">
+        <label for="address">Dirección casa</label>
+        <input type="text" id="address" name="address" placeholder="Ingresa la dirección de la casa" required>
+      </div>
+      <div class="form-group">
+        <label for="rating">Calificar casa</label>
+        <div id="rating">
+          <input type="radio" id="rating-1" name="rating" value="1" required>
+          <label for="rating-1">★</label>
+
+          <input type="radio" id="rating-2" name="rating" value="2">
+          <label for="rating-2">★★</label>
+
+          <input type="radio" id="rating-3" name="rating" value="3">
+          <label for="rating-3">★★★</label>
+
+          <input type="radio" id="rating-4" name="rating" value="4">
+          <label for="rating-4">★★★★</label>
+
+          <input type="radio" id="rating-5" name="rating" value="5">
+          <label for="rating-5">★★★★★</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="start-date">Fecha de inicio</label>
+        <input type="text" id="start-date" name="start-date" placeholder="Elige la fecha de inicio" required>
+      </div>
+      <div class="form-group">
+        <label for="end-date">Fecha final</label>
+        <input type="text" id="end-date" name="end-date" placeholder="Elige la fecha final" required>
+      </div>
+      <div class="form-group">
+        <label for="card-number">Número de tarjeta de crédito</label>
+        <input type="text" id="card-number" name="card-number" placeholder="Ingresa el número de tu tarjeta" maxlength="19" pattern="\d{4} \d{4} \d{4} \d{4}" required>
+      </div>
+      <div class="form-group">
+        <label for="card-expiration">Fecha de vencimiento</label>
+        <input type="month" id="card-expiration" name="card-expiration" required>
+      </div>
+      <div class="form-group">
+        <label for="card-cvv">Código CVV</label>
+        <input type="text" id="card-cvv" name="card-cvv" placeholder="CVV" maxlength="3" pattern="\d{3}" required>
+      </div>
+      <div class="form-group">
+        <label for="house-image">Imagen de la casa (opcional)</label>
+        <input type="file" id="house-image" name="house-image" accept="image/*">
+      </div>
+      <div class="total">
+        <label>Total a pagar: </label>
+        <span id="total-price">$0</span>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn">Confirmar y Pagar</button>
+      </div>
+    </form>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Inicializa flatpickr para la fecha de inicio
+      const startPicker = flatpickr('#start-date', {
+        minDate: 'today',
+        dateFormat: 'Y-m-d',
+        locale: 'es',
+        onChange: function(selectedDates) {
+          if (selectedDates.length > 0) {
+            // Actualiza la fecha mínima del picker de fin para que sea la fecha seleccionada en inicio
+            endPicker.set('minDate', selectedDates[0]);
+          }
+        }
+      });
+
+      // Inicializa flatpickr para la fecha final
+      const endPicker = flatpickr('#end-date', {
+        minDate: 'today',
+        dateFormat: 'Y-m-d',
+        locale: 'es'
+      });
+
+      // Función para formatear el número con comas
+      function formatNumberInput(value) {
+        let rawValue = value.replace(/,/g, '');
+        if (rawValue === '' || isNaN(rawValue)) {
+          return value;
+        }
+        const parts = rawValue.split('.');
+        let integerPart = parts[0];
+        let decimalPart = parts[1] || '';
+        integerPart = Number(integerPart).toLocaleString('en-US');
+        return decimalPart ? integerPart + '.' + decimalPart : integerPart;
+      }
+
+      const housePriceInput = document.getElementById('house-price');
+      housePriceInput.addEventListener('input', (e) => {
+        const cursorPosition = e.target.selectionStart;
+        const originalLength = e.target.value.length;
+        const formattedValue = formatNumberInput(e.target.value);
+        e.target.value = formattedValue;
+        const newLength = formattedValue.length;
+        e.target.selectionEnd = cursorPosition + (newLength - originalLength);
+      });
+
+      // En el submit, se convierte el valor formateado a float quitando las comas
+      const form = document.getElementById('reservation-form');
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const formData = new FormData(form);
+        let rawPrice = formData.get('house-price').replace(/,/g, '');
+        let priceFloat = parseFloat(rawPrice);
+        console.log("Precio como float:", priceFloat);
+        alert(`¡Reserva confirmada!
+Ciudad: ${formData.get('city')}
+Barrio: ${formData.get('neighborhood')}
+Dirección: ${formData.get('address')}
+Fecha de inicio: ${formData.get('start-date')}
+Fecha final: ${formData.get('end-date')}
+Precio: ${priceFloat}`);
+      });
+    });
+  </script>
+</body>
+</html>

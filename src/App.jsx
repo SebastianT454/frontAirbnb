@@ -32,7 +32,7 @@ function App() {
     functionsUsuario.logear(nombre, passord)
       .then((result) => {
         if(result.id){
-          setPantalla(<Mapa />)
+          setPantalla(<Mapa idUsuario={result.id} />)
           idusuario = result.id
           console.log(idusuario)
         }else{

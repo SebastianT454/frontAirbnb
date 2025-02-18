@@ -5,12 +5,13 @@ import { getAll as getAllCities } from './dbcalls/FunctionsCity';
 import { byCity as getNeighborhoodsByCity } from './dbcalls/FunctionsNeighborhood';
 import { byNeighborhood, reverseGeocode } from './dbcalls/FunctionsHouse';
 
-const Mapa = () => {
+const Mapa = ({ idUsuario }) => {
+
   const [map, setMap] = useState(null);
   const [cities, setCities] = useState([]);
   const [neighborhoods, setNeighborhoods] = useState([]);
   const [selectedCityId, setSelectedCityId] = useState(null);
-  const [houses, setHouses] = useState([]); // Estado para almacenar las houses con dirección formateada
+  const [houses, setHouses] = useState([]);
   const markersLayerRef = useRef(null);
 
   useEffect(() => {
@@ -21,7 +22,7 @@ const Mapa = () => {
     }).addTo(mapInstance);
     setMap(mapInstance);
 
-    // Crear un LayerGroup para los markers y añadirlo al mapa
+    // Crear un LayerGroup para los markers de barrios, ciudades y añadirlo al mapa
     markersLayerRef.current = L.layerGroup().addTo(mapInstance);
 
     // Obtener la lista de ciudades y establecerlas en el estado
@@ -41,13 +42,12 @@ const Mapa = () => {
     if (markersLayerRef.current) {
       markersLayerRef.current.clearLayers();
     }
-    // Para cada house, agregamos un marker y convertimos las coordenadas a dirección legible
+    // Para cada house, se agrega un marker y convertimos las coordenadas a dirección usando reverse geocode
     const housesWithAddress = await Promise.all(
       housesArray.map(async (house) => {
-        // Se asume que house.address es una cadena de texto en formato "[lng, lat]"
         const [lng, lat] = JSON.parse(house.address);
         const displayAddress = await reverseGeocode(lat, lng);
-        // Crear el marker para la house
+        // Crear el marker para cada house
         const marker = L.marker([lat, lng]);
         marker.bindPopup(`<b>${displayAddress}</b><br>Precio: ${house.price}`);
         marker.addTo(markersLayerRef.current);
@@ -57,7 +57,7 @@ const Mapa = () => {
     setHouses(housesWithAddress);
   };
 
-  // Función para obtener todas las houses de los barrios de una ciudad
+  // Función para obtener todas las casas de los barrios de una ciudad
   const getHousesForCity = async (neighborhoodsArray) => {
     let allHouses = [];
     for (const neighborhood of neighborhoodsArray) {
@@ -67,11 +67,11 @@ const Mapa = () => {
     return allHouses;
   };
 
-  // Al cambiar la ciudad, se actualizan los barrios y se muestran todas las houses de la ciudad
+  // Al cambiar la ciudad, se actualizan los barrios y se muestran todas las casas de la ciudad
   const handleCityChange = async (event) => {
-    const cityId = parseInt(event.target.value, 10);
+    const cityId = parseInt(event.target.value);
     if (isNaN(cityId)) {
-      // Si no se selecciona una ciudad válida, limpiar barrios, markers y houses
+      // Si no se selecciona una ciudad, se limpian los barrios, markers y houses
       setSelectedCityId(null);
       setNeighborhoods([]);
       updateMarkers([]);
@@ -90,16 +90,16 @@ const Mapa = () => {
       map.setView([lat, lng], 12);
     }
 
-    // Obtener y mostrar todas las houses de todos los barrios de la ciudad
+    // Obtener y mostrar todas las casas de todos los barrios de la ciudad
     const housesData = await getHousesForCity(neighborhoodsData);
     updateMarkers(housesData);
   };
 
-  // Al cambiar el barrio, se muestran solo las houses de ese barrio
+  // Al cambiar el barrio, se muestran solo las casas de ese barrio
   const handleNeighborhoodChange = async (event) => {
-    const neighborhoodId = parseInt(event.target.value, 10);
+    const neighborhoodId = parseInt(event.target.value);
     if (isNaN(neighborhoodId)) {
-      // Si no se selecciona un barrio, mostrar todas las houses de la ciudad
+      // Si no se selecciona un barrio, mostrar todas las casas de la ciudad
       const housesData = await getHousesForCity(neighborhoods);
       updateMarkers(housesData);
       return;
@@ -110,7 +110,7 @@ const Mapa = () => {
       const [lng, lat] = JSON.parse(selectedNeighborhood.coords);
       map.setView([lat, lng], 14);
     }
-    // Obtener y mostrar las houses del barrio seleccionado
+    // Obtener y mostrar las casas del barrio seleccionado
     const housesData = await byNeighborhood(neighborhoodId);
     updateMarkers(housesData);
   };

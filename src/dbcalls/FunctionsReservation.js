@@ -65,3 +65,17 @@ var variable = await  fetch("http://18.208.152.26:8085/reservation", requestOpti
 .then((response) => response.json());
 return variable
 }
+
+export async function getByUser(iduser){
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+const requestOptions = {
+method: "GET",
+redirect: "follow"
+};
+
+var variable = await  fetch("http://18.208.152.26:8085/reservation/getByUser/"+id, requestOptions)
+.then((response) => response.json());
+return variable
+
+}
