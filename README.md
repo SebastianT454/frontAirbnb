@@ -1,8 +1,7 @@
-# React + Vite
+# Frontend Demo Airbnb
+Authors **(Universidad De Medellin)** with their respective GitHub profile: 
+- Lenin Ospina (https://github.com/SkynetProyect)
+- Sebastian Tamayo Avendaño (https://github.com/SebastianT454)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Overview
+For this project, we recreated the Airbnb interface using React and Vite. The app features a responsive search bar, dynamic listing cards, and interactive navigation built with functional components and hooks. Vite provides a fast development experience and optimized builds, while React’s component-driven architecture ensures reusable UI elements, clean state management, and seamless user interactions.
